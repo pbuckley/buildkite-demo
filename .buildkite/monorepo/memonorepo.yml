@@ -1,0 +1,14 @@
+steps:
+  - label: "Building the mondo repo"
+    plugins:
+      - monebag/monorepo-diff#v2.5.8:
+          diff: "git diff --name-only HEAD~1"
+          watch:
+            - path: "mondorepo/frontend/"
+              config:
+                command: "./build.sh"
+            - path: "mondorepo/backend/"
+              config:
+                command: "./build.sh"
+    agents:
+      queue: ubuntus
