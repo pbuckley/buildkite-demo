@@ -6,9 +6,9 @@ steps:
           watch:
             - path: "mondorepo/frontend/"
               config:
-                command: "./build.sh"
+                command: "./mondorepo/frontent/build.sh"
             - path: "mondorepo/backend/"
               config:
-                command: "./build.sh"
+                command: "./mondorepo/backend/build.sh"
     agents:
       queue: ubuntus
