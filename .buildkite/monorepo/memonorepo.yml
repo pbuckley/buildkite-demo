@@ -1,14 +1,16 @@
 steps:
   - label: "Building the mondo repo"
+    env:
+      BUILDKITE_MONDO_PATH: mondorepo
     plugins:
       - monebag/monorepo-diff#v2.5.8:
           diff: "git diff --name-only HEAD~1"
           watch:
-            - path: "mondorepo/frontend/"
+            - path: "${BUILDKITE_MONDO_PATH}/frontend/"
               config:
-                command: "./mondorepo/frontent/build.sh"
-            - path: "mondorepo/backend/"
+                command: "./${BUILDKITE_MONDO_PATH}/frontend/build.sh"
+            - path: "${BUILDKITE_MONDO_PATH}/backend/"
               config:
-                command: "./mondorepo/backend/build.sh"
+                command: "./${BUILDKITE_MONDO_PATH}/backend/build.sh"
     agents:
       queue: ubuntus
