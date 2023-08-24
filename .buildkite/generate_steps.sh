@@ -7,9 +7,7 @@ decision_steps=$(cat <<EOF
       - select: "Choices"
         key: "choice"
         options:
-          - label: "Display the UnblockConf logo again"
-            value: "logo"
-          - label: "Randomly pass/fail a bunch of times in parallel"
+          - label: "Randomly pass/fail a bunch of times in parallel :copybara:"
             value: "pass-fail"
           - label: "Finish the build green"
             value: "build-pass"
@@ -38,23 +36,23 @@ fi
 
 new_yaml=""
 case $current_state in
-  logo)
+  pass-fail)
     action_step=$(cat <<EOF
-  - label: ":buildkite: Display UnblockConf Logo"
-    command: "buildkite-agent artifact upload unblock.png && ./log_image.sh artifact://unblock.png"
+  - label: ":zap: Shard %N of %t"
+    command: "bash .buildkite/scripts/random_pass_fail.sh"
+    parallelism: 5
 EOF
 )
     new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$decision_steps")
   ;;
 
-  pass-fail)
+  retry-failed-only)
     action_step=$(cat <<EOF
-  - label: ":zap: Shard %N of %t"
-    command: "bash .buildkite/scripts/random_pass_fail.sh"
-    parallelism: 5 
+  - label: ":bk-status-pending: Retry only your failed steps? :magic_wand:"
+    command: "echo 'Exiting build with status 0' && exit 0"
 EOF
 )
-    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$decision_steps")
+    new_yaml=$(printf "%s\n" "$action_step")
   ;;
 
   build-pass)
