@@ -41,8 +41,8 @@ case $current_state in
   pass-fail)
     action_step=$(cat <<EOF
   - label: ":zap: Shard %N of %t"
-    command: "bash .buildkite/scripts/random_pass_fail.sh"
-    parallelism: build.env(SHARDS)
+    command: "bash .buildkite/scripts/random_pass_fail.sh build.env(SHARDS)"
+    parallelism: 5
 EOF
 )
     new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$decision_steps")
