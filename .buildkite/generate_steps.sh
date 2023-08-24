@@ -9,6 +9,8 @@ decision_steps=$(cat <<EOF
         options:
           - label: "Randomly pass/fail a bunch of times in parallel :copybara:"
             value: "pass-fail"
+          - label: "Retry Failed Steps ONLY"
+            value: "retry-failed-only"
           - label: "Finish the build green"
             value: "build-pass"
           - label: "Finish the build red"
