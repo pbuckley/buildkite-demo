@@ -41,7 +41,7 @@ case $current_state in
   pass-fail)
     action_step=$(cat <<EOF
   - label: ":zap: Shard %N of %t"
-    key: "shard-%N"
+    key: "one-shard"
     command: "bash .buildkite/scripts/random_pass_fail.sh $SHARDS"
     parallelism: 5
 EOF
