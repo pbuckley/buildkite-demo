@@ -27,7 +27,7 @@ EOF
 
 # this bit is an ugly hack to avoid checking metadata on first run of the script
 current_state=""
-first_step_label=":pipeline: Upload Pipeline"
+first_step_label=":pipeline: Upload Dynamic Pipeline"
 if [ "$BUILDKITE_LABEL" != "$first_step_label" ]; then
   current_state=$(buildkite-agent meta-data get "choice")
 else
