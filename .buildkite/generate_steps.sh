@@ -43,7 +43,7 @@ case $current_state in
   - label: ":zap: Shard %N of %t"
     key: "one-shard"
     command: "bash .buildkite/scripts/random_pass_fail.sh $SHARDS"
-    parallelism: 5
+    parallelism: $SHARDS
 EOF
 )
     new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$decision_steps")
