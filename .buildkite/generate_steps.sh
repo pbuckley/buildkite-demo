@@ -9,8 +9,8 @@ decision_steps=$(cat <<EOF
         options:
           - label: "Display the UnblockConf logo again"
             value: "logo"
-          - label: "Print 'hello world' a bunch of times in parallel"
-            value: "hello-world"
+          - label: "Randomly pass/fail a bunch of times in parallel"
+            value: "pass-fail"
           - label: "Finish the build green"
             value: "build-pass"
           - label: "Finish the build red"
@@ -47,10 +47,10 @@ EOF
     new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$decision_steps")
   ;;
 
-  hello-world)
+  pass-fail)
     action_step=$(cat <<EOF
-  - label: ":zap: Parallel job %N of %t"
-    command: "echo 'Hello, world!'"
+  - label: ":zap: Shard %N of %t"
+    command: "bash .buildkite/scripts/random_pass_fail.sh"
     parallelism: 5 
 EOF
 )
