@@ -15,11 +15,11 @@ echo "NUM SHARDS IN BUILD.ENV: ${1}"
 
 if [[ $(( ${my_rand_seed}  % 2)) -eq 0 ]]; then
     echo "SUCCESS!"
-    buildkite-agent annotate --style "success" --context "${CONTEXTIBOO}" "key: ${BUILDKITE_STEP_KEY} id: ${BUILDKITE_STEP_ID} :shipit:"
+    buildkite-agent annotate --style "success" --context "${CONTEXTIBOO}" "step_id: ${BUILDKITE_STEP_ID} job_id: ${BUILDKITE_JOB_ID} :shipit:"
     exit 0
 fi
 
 echo "FAILURE!"
-buildkite-agent annotate --style "error" --context "${CONTEXTIBOO}" "key: ${BUILDKITE_STEP_KEY} id: ${BUILDKITE_STEP_ID} :bk-status-failed: :whale:"
+buildkite-agent annotate --style "error" --context "${CONTEXTIBOO}" "step_id: ${BUILDKITE_STEP_KEY} job_id: ${BUILDKITE_JOB_ID} :bk-status-failed: :whale:"
 exit 1
 
