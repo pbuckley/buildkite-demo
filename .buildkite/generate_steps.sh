@@ -15,6 +15,12 @@ decision_steps=$(cat <<EOF
             value: "build-pass"
           - label: "Finish the build red"
             value: "build-fail"
+          - label: "Deploy to us-east-2"
+            value: "build-deploy"
+          - label: "Create release tag"
+            value: "build-tag"
+          - label: "Deploy to all envs"
+            value: "build-final"
   - label: "Process input"
     command: ".buildkite/generate_steps.sh"
 EOF
@@ -70,6 +76,24 @@ EOF
     action_step=$(cat <<EOF
   - label: ":thumbsdown: Failing build"
     command: "echo 'Exiting build with status 1' && exit 1"
+EOF
+)
+  build-deploy)
+    action_step=$(cat <<EOF
+  - label: ":rocket: Deploying to us-east-2"
+    command: "echo 'Deploying to us-east-2 ' && exit 0"
+EOF
+)
+  build-tag)
+    action_step=$(cat <<EOF
+  - label: ":ship: Tagging release"
+    command: "echo 'Tagging release' && exit 0"
+EOF
+)
+  build-final)
+    action_step=$(cat <<EOF
+  - label: ":smile: Finalizing deploy to all envs"
+    command: "echo 'Deploying to all environments' && exit 0"
 EOF
 )
     new_yaml=$(printf "%s\n" "$action_step")
