@@ -55,8 +55,8 @@ EOF
 
   pass-fail)
     action_step=$(cat <<EOF
-  - label: ":zap: Shard %N of %t"
-    command: "bash .buildkite/scripts/random_pass_fail.sh"
+  - label: ":zap: Parallel job %N of %t"
+    command: "echo 'Hello, world!'"
     parallelism: 5 
 EOF
 )
