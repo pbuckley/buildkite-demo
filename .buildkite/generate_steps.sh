@@ -15,6 +15,26 @@ decision_steps=$(cat <<EOF
             value: "build-pass"
           - label: "Finish the build red"
             value: "build-fail"
+  - label: "Process input"
+    command: ".buildkite/generate_steps.sh"
+EOF
+)
+
+later_decision_steps=$(cat <<EOF
+  - block: ":thinking_face: What now?"
+    prompt: "Choose the next set of steps to be dynamically generated"
+    fields:
+      - select: "Choices"
+        key: "choice"
+        options:
+          - label: "Display the UnblockConf logo again"
+            value: "logo"
+          - label: "Randomly pass/fail a bunch of times in parallel"
+            value: "pass-fail"
+          - label: "Finish the build green"
+            value: "build-pass"
+          - label: "Finish the build red"
+            value: "build-fail"
           - label: "Deploy to us-east-2"
             value: "build-deploy"
           - label: "Create release tag"
@@ -50,7 +70,7 @@ case $current_state in
     command: "buildkite-agent artifact upload unblock.png && ./log_image.sh artifact://unblock.png"
 EOF
 )
-    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$decision_steps")
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
   ;;
 
   pass-fail)
@@ -60,7 +80,7 @@ EOF
     parallelism: 5 
 EOF
 )
-    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$decision_steps")
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
   ;;
 
   build-pass)
@@ -87,7 +107,7 @@ EOF
     command: "echo 'Deploying to us-east-2'"
 EOF
 )
-    new_yaml=$(printf "%s\n" "$action_step")
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
   ;;
 
   build-tag)
@@ -96,7 +116,7 @@ EOF
     command: "echo 'Tagging release'"
 EOF
 )
-    new_yaml=$(printf "%s\n" "$action_step")
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
   ;;
 
   build-final)
@@ -105,7 +125,7 @@ EOF
     command: "echo 'Deploying to all environments'"
 EOF
 )
-    new_yaml=$(printf "%s\n" "$action_step")
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
   ;;
 esac
 
