@@ -84,7 +84,7 @@ EOF
   build-deploy)
     action_step=$(cat <<EOF
   - label: ":rocket: Deploying to us-east-2"
-    command: "echo 'Deploying to us-east-2 ' && exit 0"
+    command: "echo 'Deploying to us-east-2'"
 EOF
 )
     new_yaml=$(printf "%s\n" "$action_step")
@@ -93,7 +93,7 @@ EOF
   build-tag)
     action_step=$(cat <<EOF
   - label: ":ship: Tagging release"
-    command: "echo 'Tagging release' && exit 0"
+    command: "echo 'Tagging release'"
 EOF
 )
     new_yaml=$(printf "%s\n" "$action_step")
@@ -102,7 +102,7 @@ EOF
   build-final)
     action_step=$(cat <<EOF
   - label: ":smile: Finalizing deploy to all envs"
-    command: "echo 'Deploying to all environments' && exit 0"
+    command: "echo 'Deploying to all environments'"
 EOF
 )
     new_yaml=$(printf "%s\n" "$action_step")
