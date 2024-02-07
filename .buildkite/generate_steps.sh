@@ -46,6 +46,24 @@ later_decision_steps=$(cat <<EOF
 EOF
 )
 
+text_steps=$(cat <<EOF
+  - block: ":thinking_face: What now?"
+    prompt: "Enter your name to echo back."
+    fields:
+    fields:
+      - text: "Name?"
+        key: "choice"
+  - label: "Personalized greeting"
+    command: "env"
+EOF
+)
+
+steps:
+  - input: "Information please"
+    fields:
+      - text: "What is the date today?"
+        key: "todays-date"
+
 wait_step=$(cat <<EOF
   - wait
 EOF
@@ -75,7 +93,7 @@ EOF
 
   pass-fail)
     action_step=$(cat <<EOF
-  - label: ":zap: Parallel job %N of %t"
+  - label: ":zap: Parallel job"
     command: "echo 'Hello, world!'"
     parallelism: 5 
 EOF
@@ -116,7 +134,7 @@ EOF
     command: "echo 'Tagging release'"
 EOF
 )
-    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$text_steps")
   ;;
 
   build-final)
