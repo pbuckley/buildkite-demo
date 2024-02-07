@@ -9,7 +9,7 @@ decision_steps=$(cat <<EOF
         options:
           - label: "Display the UnblockConf logo again"
             value: "logo"
-          - label: "Randomly pass/fail a bunch of times in parallel"
+          - label: "Echo hello-world a bunch of times in parallel"
             value: "pass-fail"
           - label: "Finish the build green"
             value: "build-pass"
@@ -29,7 +29,7 @@ later_decision_steps=$(cat <<EOF
         options:
           - label: "Display the UnblockConf logo again"
             value: "logo"
-          - label: "Randomly pass/fail a bunch of times in parallel"
+          - label: "Echo hello-world a bunch of times in parallel"
             value: "pass-fail"
           - label: "Finish the build green"
             value: "build-pass"
@@ -57,12 +57,6 @@ text_steps=$(cat <<EOF
     command: "env"
 EOF
 )
-
-steps:
-  - input: "Information please"
-    fields:
-      - text: "What is the date today?"
-        key: "todays-date"
 
 wait_step=$(cat <<EOF
   - wait
