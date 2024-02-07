@@ -52,9 +52,11 @@ text_steps=$(cat <<EOF
     fields:
     fields:
       - text: "Name?"
-        key: "choice"
+        key: "hello-name"
   - label: "Personalized greeting"
-    command: "env"
+    command: "Greetings to you, $(buildkite-agent meta-data get hello-name)!"
+  - label: "Process input"
+    command: ".buildkite/generate_steps.sh"
 EOF
 )
 
