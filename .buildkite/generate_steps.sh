@@ -46,18 +46,6 @@ later_decision_steps=$(cat <<EOF
 EOF
 )
 
-text_steps=$(cat <<EOF
-  - block: ":thinking_face: What now?"
-    prompt: "Enter your name to echo back."
-    fields:
-    fields:
-      - text: "Name?"
-        key: "hello-name"
-  - label: "Process input"
-    command: ".buildkite/generate_steps.sh"
-EOF
-)
-
 wait_step=$(cat <<EOF
   - wait
 EOF
@@ -128,22 +116,13 @@ EOF
     command: "echo 'Tagging release'"
 EOF
 )
-    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$text_steps")
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
   ;;
 
   build-final)
     action_step=$(cat <<EOF
   - label: ":smile: Finalizing deploy to all envs"
     command: "echo 'Deploying to all environments'"
-EOF
-)
-    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
-  ;;
-
-  hello-name)
-    action_step=$(cat <<EOF
-  - label: "Personalized greeting"
-    command: "./personalized_greeting.sh"
 EOF
 )
     new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
