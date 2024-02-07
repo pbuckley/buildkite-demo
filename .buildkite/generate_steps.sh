@@ -53,8 +53,6 @@ text_steps=$(cat <<EOF
     fields:
       - text: "Name?"
         key: "hello-name"
-  - label: "Personalized greeting"
-    command: "echo Greetings to you, $(buildkite-agent meta-data get hello-name)!"
   - label: "Process input"
     command: ".buildkite/generate_steps.sh"
 EOF
@@ -141,6 +139,16 @@ EOF
 )
     new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
   ;;
+
+  hello-name)
+    action_step=$(cat <<EOF
+  - label: "Personalized greeting"
+    command: "./personalized_greeting.sh"
+EOF
+)
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
+  ;;
+
 esac
 
 printf "%s\n" "$new_yaml" | buildkite-agent pipeline upload
