@@ -54,7 +54,7 @@ text_steps=$(cat <<EOF
       - text: "Name?"
         key: "hello-name"
   - label: "Personalized greeting"
-    command: "Greetings to you, $(buildkite-agent meta-data get hello-name)!"
+    command: "echo Greetings to you, $(buildkite-agent meta-data get hello-name)!"
   - label: "Process input"
     command: ".buildkite/generate_steps.sh"
 EOF
