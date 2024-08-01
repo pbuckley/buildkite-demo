@@ -9,7 +9,7 @@ decision_steps=$(cat <<EOF
         options:
           - label: "Display the UnblockConf logo again"
             value: "logo"
-          - label: "Randomly pass/fail a bunch of times in parallel"
+          - label: "Echo hello-world a bunch of times in parallel"
             value: "pass-fail"
           - label: "Finish the build green"
             value: "build-pass"
@@ -19,6 +19,38 @@ decision_steps=$(cat <<EOF
     command: ".buildkite/generate_steps.sh"
 EOF
 )
+
+later_decision_steps=$(cat <<EOF
+  - block: ":thinking_face: What now?"
+    prompt: "Choose the next set of steps to be dynamically generated"
+    fields:
+      - select: "Choices"
+        key: "choice"
+        options:
+          - label: "Display the UnblockConf logo again"
+            value: "logo"
+          - label: "Echo hello-world a bunch of times in parallel"
+            value: "pass-fail"
+          - label: "Finish the build green"
+            value: "build-pass"
+          - label: "Finish the build red"
+            value: "build-fail"
+          - label: "Deploy to us-east-2"
+            value: "build-deploy"
+          - label: "Create release tag"
+            value: "build-tag"
+          - label: "Deploy to all envs"
+            value: "build-final"
+  - label: "Process input"
+    command: ".buildkite/generate_steps.sh"
+EOF
+)
+
+# to bring back the personalized greeting
+# key: "choice"
+# instead of hello-name - but I set the value to "hello-name"?
+# or I set the value to what the person's name is?
+# how can I do this again?
 
 wait_step=$(cat <<EOF
   - wait
@@ -44,17 +76,17 @@ case $current_state in
     command: "buildkite-agent artifact upload unblock.png && ./log_image.sh artifact://unblock.png"
 EOF
 )
-    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$decision_steps")
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
   ;;
 
   pass-fail)
     action_step=$(cat <<EOF
-  - label: ":zap: Shard %N of %t"
-    command: "bash .buildkite/scripts/random_pass_fail.sh"
+  - label: ":zap: Parallel job"
+    command: "echo 'Hello, world!'"
     parallelism: 5 
 EOF
 )
-    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$decision_steps")
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
   ;;
 
   build-pass)
@@ -74,6 +106,34 @@ EOF
 )
     new_yaml=$(printf "%s\n" "$action_step")
   ;;
+
+  build-deploy)
+    action_step=$(cat <<EOF
+  - label: ":rocket: Deploying to us-east-2"
+    command: "echo 'Deploying to us-east-2'"
+EOF
+)
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
+  ;;
+
+  build-tag)
+    action_step=$(cat <<EOF
+  - label: ":ship: Tagging release"
+    command: "echo 'Tagging release'"
+EOF
+)
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
+  ;;
+
+  build-final)
+    action_step=$(cat <<EOF
+  - label: ":smile: Finalizing deploy to all envs"
+    command: "echo 'Deploying to all environments'"
+EOF
+)
+    new_yaml=$(printf "%s\n%s\n%s" "$action_step" "$wait_step" "$later_decision_steps")
+  ;;
+
 esac
 
 printf "%s\n" "$new_yaml" | buildkite-agent pipeline upload

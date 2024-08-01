@@ -1,0 +1,35 @@
+---
+env:
+  FOO: "/home/peterb/foo"
+  BAR: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin:/usr/bin"
+steps:
+- key: preflight
+  label: ":precommit: Preflight"
+  notify:
+  - github_commit_status:
+      context: Preflight
+  command: ".buildkite/buildit.sh preflight"
+- key: test
+  label: 'Test: Linux'
+  notify:
+  - github_commit_status:
+      context: 'Test: Linux'
+  command: ".buildkite/buildit.sh linux"
+  depends_on: preflight
+- key: arm
+  label: 'Test: ARM'
+  notify:
+  - github_commit_status:
+      context: 'Test: ARM'
+  command: ".buildkite/buildit.sh arm"
+  depends_on: preflight
+- key: firmware
+  label: 'Build: Firmware'
+  notify:
+  - github_commit_status:
+      context: 'Build: Firmware'
+  command: ".buildkite/buildit.sh firmware"
+  depends_on: preflight
+notify:
+- github_commit_status:
+    context: Buildkite Build
