@@ -46,6 +46,12 @@ later_decision_steps=$(cat <<EOF
 EOF
 )
 
+# to bring back the personalized greeting
+# key: "choice"
+# instead of hello-name - but I set the value to "hello-name"?
+# or I set the value to what the person's name is?
+# how can I do this again?
+
 wait_step=$(cat <<EOF
   - wait
 EOF
