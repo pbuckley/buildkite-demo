@@ -4,6 +4,7 @@ import json
 yaml = YAML()
 yaml.indent(mapping=2, sequence=4, offset=2)
 yaml.preserve_quotes = True
+yaml.width = 4096  # Set a large line width to prevent wrapping
 
 
 def load_json_variables(file_path):
@@ -12,7 +13,8 @@ def load_json_variables(file_path):
 
 
 def format_commands(commands):
-    return '\n'.join(commands) + '\n'  # Add an extra newline
+    from ruamel.yaml.scalarstring import LiteralScalarString
+    return LiteralScalarString('\n'.join(commands) + '\n')
 
 
 def format_plugins(plugins):
@@ -28,16 +30,16 @@ def format_plugins(plugins):
 
 
 def generate_yaml_data(items):
-    people = []
+    steps = []
     for item in items:
-        person = {
+        step = {
             'label': item['label'],
             'key': item['key'],
             'commands': format_commands(item['commands']),
             'plugins': format_plugins(item['plugins'])
         }
-        people.append(person)
-    return {'people': people}
+        steps.append(step)
+    return {'steps': steps}
 
 
 def save_yaml(data, file_path):
@@ -48,11 +50,9 @@ def save_yaml(data, file_path):
 def main():
     variables_path = 'variables.json'
     output_path = 'pipeline.yml'
-
     items = load_json_variables(variables_path)
     yaml_data = generate_yaml_data(items)
     save_yaml(yaml_data, output_path)
-
     print(f"YAML file generated and saved to {output_path}")
 
 
