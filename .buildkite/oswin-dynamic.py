@@ -1,6 +1,5 @@
 import yaml
 import json
-# from jinja2 import Template
 
 
 class LiteralString(str):
@@ -29,15 +28,19 @@ def load_json_variables(file_path):
 
 
 def format_commands(commands):
-    return LiteralString('\n'.join(commands) + '\n')
+    return LiteralString('\n'.join(commands) + '\n')  # Add an extra newline
 
 
 def format_plugins(plugins):
-    return [
-         {k: QuotedString(v) if isinstance(v, str) else v for k, v in plugin.items()}
-#        {QuotedString(v) if isinstance(v, str) else v for k, v in plugin.items()}
-        for plugin in plugins
-    ]
+    formatted_plugins = {}
+    for plugin in plugins:
+        label = list(plugin.keys())[0]
+        properties = plugin[label]
+        formatted_plugins[QuotedString(label)] = {
+            k: QuotedString(v) if isinstance(v, str) else v
+            for k, v in properties.items()
+        }
+    return formatted_plugins
 
 
 def generate_yaml_data(items):
