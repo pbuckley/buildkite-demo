@@ -39,7 +39,21 @@ def generate_yaml_data(items):
             'plugins': format_plugins(item['plugins'])
         }
         steps.append(step)
-    return {'steps': steps}
+
+    # Generate env dictionary, too
+    env = {
+        'AWS_REGION': 'eu-west-1',
+        'AWS_ACCOUNT_ID': '1234567890',
+        'ECR_REPOSITORY': 'polar-bookstore',
+        'VERSION': 'Buildkite-v1'
+    }
+
+    # and don't forget our queue specification
+    agents = {
+        'queue': 'pbof'
+    }
+
+    return {'agents': agents, 'env': env, 'steps': steps}
 
 
 def save_yaml(data, file_path):
