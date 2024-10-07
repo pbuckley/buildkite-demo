@@ -62,8 +62,8 @@ def save_yaml(data, file_path):
 
 
 def main():
-    variables_path = 'variables.json'
-    output_path = 'pipeline.yml'
+    variables_path = '.buildkite/variables.json'
+    output_path = '.buildkite/pipeline.yml'
     items = load_json_variables(variables_path)
     yaml_data = generate_yaml_data(items)
     save_yaml(yaml_data, output_path)
