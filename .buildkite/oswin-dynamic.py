@@ -32,12 +32,21 @@ def format_plugins(plugins):
 def generate_yaml_data(items):
     steps = []
     for item in items:
-        step = {
-            'label': item['label'],
-            'key': item['key'],
-            'commands': format_commands(item['commands']),
-            'plugins': format_plugins(item['plugins'])
-        }
+        if item.get('depends_on'):
+            step = {
+                'label': item['label'],
+                'key': item['key'],
+                'depends_on': item['depends_on'],
+                'commands': format_commands(item['commands']),
+                'plugins': format_plugins(item['plugins'])
+            }
+        else:
+            step = {
+                'label': item['label'],
+                'key': item['key'],
+                'commands': format_commands(item['commands']),
+                'plugins': format_plugins(item['plugins'])
+            }
         steps.append(step)
 
     # Generate env dictionary, too
