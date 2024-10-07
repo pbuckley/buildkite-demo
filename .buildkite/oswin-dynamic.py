@@ -1,5 +1,6 @@
 import yaml
 import json
+from collections import OrderedDict
 
 
 class LiteralString(str):
@@ -18,8 +19,13 @@ def quoted_string_representer(dumper, data):
     return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"')
 
 
+def ordered_dict_representer(dumper, data):
+    return dumper.represent_mapping('tag:yaml.org,2002:map', data.items())
+
+
 yaml.add_representer(LiteralString, literal_string_representer)
 yaml.add_representer(QuotedString, quoted_string_representer)
+yaml.add_representer(OrderedDict, ordered_dict_representer)
 
 
 def load_json_variables(file_path):
@@ -32,26 +38,28 @@ def format_commands(commands):
 
 
 def format_plugins(plugins):
-    formatted_plugins = {}
+    formatted_plugins = []
     for plugin in plugins:
-        label = list(plugin.keys())[0]
-        properties = plugin[label]
-        formatted_plugins[QuotedString(label)] = {
+        name = list(plugin.keys())[0]
+        properties = plugin[name]
+        formatted_plugin = OrderedDict()
+        formatted_plugin[QuotedString(name)] = {
             k: QuotedString(v) if isinstance(v, str) else v
             for k, v in properties.items()
         }
+        formatted_plugins.append(formatted_plugin)
     return formatted_plugins
 
 
 def generate_yaml_data(items):
     people = []
     for item in items:
-        person = {
-            'label': QuotedString(item['label']),
-            'key': QuotedString(item['key']),
-            'commands': format_commands(item['commands']),
-            'plugins': format_plugins(item['plugins'])
-        }
+        person = OrderedDict([
+            ('label', QuotedString(item['label'])),
+            ('key', QuotedString(item['key'])),
+            ('commands', format_commands(item['commands'])),
+            ('plugins', format_plugins(item['plugins']))
+        ])
         people.append(person)
     return {'people': people}
 
